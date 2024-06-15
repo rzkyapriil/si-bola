@@ -41,7 +41,7 @@ class PemesananController extends Controller
                 'tanggal' => ['required', 'date'],
                 'lapangan' => ['required', 'string'],
                 'waktu_mulai' => ['required', 'date_format:H:i'],
-                'waktu_selesai' => ['required', 'date_format:H:i'],
+                'lama_bermain' => ['required'],
             ],
             [
                 'required' => 'Input :attribute dibutuhkan.',
@@ -54,7 +54,60 @@ class PemesananController extends Controller
             return back()->withErrors($validator, 'pemesanan')->withInput();
         }
 
+
         $data = $validator->validated();
+
+        $hari_ini = Carbon::today();
+        $check_tanggal = Carbon::parse($data['tanggal']);
+
+        if ($check_tanggal->lessThan($hari_ini)) {
+            Session::flash("message", "Tanggal tidak boleh dibawah dari " . $hari_ini->translatedFormat('d F Y'));
+            Session::flash("alert", "Error");
+            return redirect()->back();
+        }
+
+        $midnight = Carbon::parse($data['tanggal'])->addDay()->startOfDay();
+        $data['waktu_selesai'] = Carbon::parse($data['tanggal'] . ' ' . $data['waktu_mulai'])->addHours($data['lama_bermain'])->subMinutes(1);
+
+        // waktu tidak boleh melebihi jam 12
+        if ($data['waktu_selesai']->greaterThanOrEqualTo($midnight)) {
+            Session::flash("message", "Waktu melebihi jam 24:00!");
+            Session::flash("alert", "Error");
+            return redirect()->back();
+        }
+        // dd($data['waktu_selesai']);
+
+        $hari_ini = Carbon::now()->format('Y-m-d');
+        $start_time = Carbon::parse($data['tanggal'] . ' ' . $data['waktu_mulai'])->format('Y-m-d H:i:s');
+        $end_time = Carbon::parse($data['tanggal'] . ' ' . $data['waktu_selesai']->format('H:i:s'))->format('Y-m-d H:i:s');
+        // dd($end_time);
+
+        $pemesanan = Pemesanan
+            ::where('lapangan', $data['lapangan'])
+            ->where(function ($query) use ($start_time, $end_time) {
+                $query->where(function ($query) use ($start_time, $end_time) {
+                    $query->where('waktu_mulai', '<=', $start_time)
+                        ->where('waktu_selesai', '>=', $start_time);
+                })
+                    ->orWhere(function ($query) use ($start_time, $end_time) {
+                        $query->where('waktu_mulai', '<=', $end_time)
+                            ->where('waktu_selesai', '>=', $end_time);
+                    })
+                    ->orWhere(function ($query) use ($start_time, $end_time) {
+                        $query->where('waktu_mulai', '>=', $start_time)
+                            ->where('waktu_selesai', '<=', $end_time);
+                    });
+            })
+            ->exists();
+
+        // check pemesanan apakah ada yang sama jamnya
+        if ($pemesanan) {
+            Session::flash("message", "Jadwal lapangan sudah ada!");
+            Session::flash("alert", "Error");
+            return redirect()->back();
+        }
+
+        dd($pemesanan);
 
         $harga = 25000;
         $waktu_mulai = Carbon::parse('')->format($data['waktu_mulai']);
@@ -135,7 +188,7 @@ class PemesananController extends Controller
             return redirect()->route('booking.index');
         } catch (QueryException $e) {
             Session::flash("message", "Data sudah berelasi dengan data lain!");
-            Session::flash("alert", "error");
+            Session::flash("alert", "Error");
             return redirect()->back();
         }
     }

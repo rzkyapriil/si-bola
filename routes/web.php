@@ -24,6 +24,7 @@ Route::delete("/user/logout", [\App\Http\Controllers\UserAuthController::class, 
 
 Route::middleware("auth")->group(function () {
     Route::get("/booking", [\App\Http\Controllers\HomeController::class, "form"])->name("home.booking");
+    Route::post("/booking", [\App\Http\Controllers\PemesananController::class, "store"])->name("booking.store");
     Route::get("/histori-pemesanan", [\App\Http\Controllers\HistoriPemesananController::class, "index"])->name("histori-pemesanan.index");
     Route::get("/pembayaran", [\App\Http\Controllers\PembayaranController::class, "view"])->name("pembayaran.view");
     Route::post("/pembayaran", [\App\Http\Controllers\PembayaranController::class, "store"])->name("pembayaran.store");
@@ -33,7 +34,6 @@ Route::prefix('admin')->middleware(["auth", "admin"])->group(function () {
     Route::get("/dashboard", [\App\Http\Controllers\DashboardController::class, "index"])->name("dashboard.index");
 
     Route::get("/booking", [\App\Http\Controllers\PemesananController::class, "index"])->name("booking.index");
-    Route::post("/booking", [\App\Http\Controllers\PemesananController::class, "store"])->name("booking.store");
     Route::get("/booking/{id}/view", [\App\Http\Controllers\PemesananController::class, "view"])->name("booking.view");
     Route::put("/booking/{id}", [\App\Http\Controllers\PemesananController::class, "update"])->name("booking.update");
     Route::delete("/booking/{id}", [\App\Http\Controllers\PemesananController::class, "destroy"])->name("booking.destroy");

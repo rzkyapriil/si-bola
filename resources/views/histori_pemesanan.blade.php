@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Booking - Gor Griya Srimahi Indah')
-
+@php
+  use Carbon\Carbon;    
+@endphp
 @section('content')
 <div class="w-full min-h-[100dvh]">
 	@include('components.navbar')
@@ -13,14 +15,14 @@
 				<div class="flex flex-col gap-2.5 w-full border p-2.5 rounded-lg">
 					<div class="text-xs flex justify-between items-center">
 						<div class="flex items-center gap-2.5">
-							<div>{{$purchaseHistory->tanggal}}</div>
+							<div class="uppercase">{{Carbon::parse($purchaseHistory->tanggal)->translatedFormat('d F Y')}}</div>
 							<div>{{$purchaseHistory->kode_pemesanan}}</div>
 							<div class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$purchaseHistory->status}}</div>
 						</div>
-						<div class="flex items-center gap-2.5">
-							<div>{{$purchaseHistory->waktu_mulai}}</div>
-							<div> -> </div>
-							<div>{{$purchaseHistory->waktu_selesai}}</div>
+						<div class="flex items-center gap-1.5">
+							<div>{{Carbon::parse($purchaseHistory->waktu_mulai)->translatedFormat('H:s')}}</div>
+							<div>-></div>
+							<div>{{Carbon::parse($purchaseHistory->waktu_selesai)->translatedFormat('H:s')}}</div>
 						</div>
 					</div>
 					<div class="flex justify-between font-medium">
@@ -68,66 +70,4 @@
 		</div>
 	</section>
 </div>
-
-<script>
-	let hargaWeekday = 25000;
-	let hargaWeekend = 30000;
-
-	const harga = document.getElementById('harga');
-
-	function formatRupiah(amount) {
-    // Konversi angka ke string dan pisahkan setiap tiga digit dengan titik
-    const formattedNumber = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return `Rp${formattedNumber}`;
-  } 
-
-
-	function handleRadioChange(event) {
-		const waktu_awal = document.getElementById('waktu_mulai');
-		const waktu_akhir = document.getElementById('waktu_selesai');
-    const selectedValue = event.target.value;
-
-		let timeValue = waktu_awal.value;
-    let [hours, minutes] = timeValue.split(':');
-
-		let jam = parseInt(hours)+parseInt(selectedValue)
-
-		if(jam < 10){
-			waktu_akhir.value = `0${jam}:00`;
-			} else {
-			waktu_akhir.value = `${jam}:00`;
-		}
-
-		harga.textContent = formatRupiah(hargaWeekday*parseInt(selectedValue));
-
-		console.log(waktu_akhir.value);
-  }
-
-  // Get all radio buttons with name="option"
-  const radioButtons = document.querySelectorAll('input[name="lama_bermain"]');
-
-  // Add change event listener to each radio button
-  radioButtons.forEach((radio) => {
-    radio.addEventListener('change', handleRadioChange);
-  });
-
-	document.getElementById('waktu_mulai').addEventListener('change', function() {
-		const waktu_akhir = document.getElementById('waktu_selesai');
-		const lama_bermain = document.querySelector('input[name="lama_bermain"]:checked');
-
-  	let timeValue = this.value;
-    let [hours, minutes] = timeValue.split(':');
-
-		let jam = parseInt(hours)+parseInt(lama_bermain.value)
-
-    // Set minutes to '00'
-    this.value = `${hours}:00`;
-		if(jam < 10){
-			waktu_akhir.value = `0${jam}:00`;
-		} else {
-			waktu_akhir.value = `${jam}:00`;
-		}
-		console.log(waktu_akhir.value);
-  });
-</script>
 @endsection

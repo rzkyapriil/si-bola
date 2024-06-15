@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('title', 'Gor Griya Srimahi Indah')
-
+@php
+		use Carbon\Carbon;
+@endphp
 @section('admin-content')
   <div class="mb-6">
 		<h1 class="text-2xl font-bold">Booking</h1>
@@ -43,10 +45,10 @@
 								{{$booking->kode_pemesanan}}
 							</td>
 							<td class="px-6 py-4">
-								{{$booking->tanggal}}
+								{{Carbon::parse($booking->tanggal)->translatedFormat('d F Y')}}
 							</td>
 							<td class="px-6 py-4">
-								{{$booking->waktu_mulai}} -> {{$booking->waktu_selesai}}
+								{{Carbon::parse($booking->waktu_mulai)->format('H:s')}} -> {{Carbon::parse($booking->waktu_selesai)->format('H:s')}}
 							</td>
 							<td class="px-6 py-4 space-x-2">
 								<a href="{{route('booking.view', $booking->id)}}" class="font-medium text-gray-600 dark:text-gray-500 hover:underline">View</a>
