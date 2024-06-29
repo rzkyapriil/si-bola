@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pembayaran extends Model
+class Review extends Model
 {
-    protected $table = "pembayaran";
+    protected $table = "review";
     protected $primaryKey = "id";
     protected $keyType = "int";
     public $timestamps = true;
@@ -15,7 +15,6 @@ class Pembayaran extends Model
 
     protected $fillable = [
         'pemesanan_id',
-        'metode_pembayaran',
-        'bukti_pembayaran',
+        'komentar',
     ];
 }

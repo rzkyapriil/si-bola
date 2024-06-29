@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inventaris;
 use App\Models\Pemesanan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,11 +19,12 @@ class HomeController extends Controller
             ->orderBy('waktu_mulai', 'asc')
             ->select()
             ->get();
-
+        $inventories = Inventaris::select()->get();
         $startTime = Carbon::createFromTime(8, 0);
         $endTime = Carbon::createFromTime(24, 0);
+        $tanggal = isset($request->tanggal) ? $request->tanggal : Carbon::now()->format('Y-m-d');
 
-        return view('home', compact('timetables', 'startTime', 'endTime'));
+        return view('home', compact('timetables', 'inventories', 'startTime', 'endTime', 'tanggal'));
     }
 
     public function login()

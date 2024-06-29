@@ -27,9 +27,27 @@
 					</div>
 				</div>
 				<div class="pt-4">
+					<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Pilih metode pembayaran</label>
+					<ul class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+							<li class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
+									<div class="flex items-center ps-3">
+											<input id="list-radio-license" type="radio" value="transfer" name="metode_pembayaran" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" checked>
+											<label for="list-radio-license" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Transfer</label>
+									</div>
+							</li>
+							<li class="w-full border-gray-200 rounded-t-lg dark:border-gray-600">
+									<div class="flex items-center ps-3">
+											<input id="list-radio-passport" type="radio" value="cash" name="metode_pembayaran" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+											<label for="list-radio-passport" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Cash</label>
+									</div>
+							</li>
+					</ul>
+				</div>
+
+				<div id="formBukti" class="pt-4">
 					<label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload bukti pembayaran</label>
 					<input type="hidden" name="kode_pemesanan" value="{{$payments->kode_pemesanan}}">
-					<input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" name="bukti_pembayaran" accept=".jpg,.jpeg,.png" required>
+					<input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="inputBukti" type="file" name="bukti_pembayaran" accept=".jpg,.jpeg,.png" required>
 				</div>
 				<div class="flex items-end justify-between py-4">
 					<div class="text-lg">Total</div>
@@ -42,64 +60,19 @@
 </div>
 
 <script>
-	let hargaWeekday = 25000;
-	let hargaWeekend = 30000;
+	$(document).ready(function(){
+		$("input[name='metode_pembayaran']").change(function(){
+      var selectedValue = $("input[name='metode_pembayaran']:checked").val();
 
-	const harga = document.getElementById('harga');
-
-	function formatRupiah(amount) {
-    // Konversi angka ke string dan pisahkan setiap tiga digit dengan titik
-    const formattedNumber = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return `Rp${formattedNumber}`;
-  } 
-
-
-	function handleRadioChange(event) {
-		const waktu_awal = document.getElementById('waktu_mulai');
-		const waktu_akhir = document.getElementById('waktu_selesai');
-    const selectedValue = event.target.value;
-
-		let timeValue = waktu_awal.value;
-    let [hours, minutes] = timeValue.split(':');
-
-		let jam = parseInt(hours)+parseInt(selectedValue)
-
-		if(jam < 10){
-			waktu_akhir.value = `0${jam}:00`;
+      if(selectedValue == 'transfer')
+			{
+				$("#formBukti").removeClass("hidden")
+				$("#inputBukti").prop('disabled', false);
 			} else {
-			waktu_akhir.value = `${jam}:00`;
-		}
-
-		harga.textContent = formatRupiah(hargaWeekday*parseInt(selectedValue));
-
-		console.log(waktu_akhir.value);
-  }
-
-  // Get all radio buttons with name="option"
-  const radioButtons = document.querySelectorAll('input[name="lama_bermain"]');
-
-  // Add change event listener to each radio button
-  radioButtons.forEach((radio) => {
-    radio.addEventListener('change', handleRadioChange);
-  });
-
-	document.getElementById('waktu_mulai').addEventListener('change', function() {
-		const waktu_akhir = document.getElementById('waktu_selesai');
-		const lama_bermain = document.querySelector('input[name="lama_bermain"]:checked');
-
-  	let timeValue = this.value;
-    let [hours, minutes] = timeValue.split(':');
-
-		let jam = parseInt(hours)+parseInt(lama_bermain.value)
-
-    // Set minutes to '00'
-    this.value = `${hours}:00`;
-		if(jam < 10){
-			waktu_akhir.value = `0${jam}:00`;
-		} else {
-			waktu_akhir.value = `${jam}:00`;
-		}
-		console.log(waktu_akhir.value);
+				$("#formBukti").addClass("hidden")
+				$("#inputBukti").prop('disabled', true);
+			}
+    });
   });
 </script>
 @endsection

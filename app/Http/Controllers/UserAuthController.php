@@ -29,8 +29,14 @@ class UserAuthController extends Controller
 			$user->token = Str::uuid()->tostring();
 			$user->save();
 
-			if ($user->is_admin == 1) {
+			if ($user->hasRole('admin') or $user->hasRole('pegawai')) {
+				Session::flash("message", "Anda berhasil login!");
+				Session::flash("alert", "Success");
 				return redirect()->route("dashboard.index");
+			} elseif ($user->hasRole('kepala gor')) {
+				Session::flash("message", "Anda berhasil login!");
+				Session::flash("alert", "Success");
+				return redirect()->route("laporan.pemesanan");
 			}
 
 			Session::flash("message", "Anda berhasil login!");

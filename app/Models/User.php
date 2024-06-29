@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+    use HasRoles;
+
     protected $table = "users";
     protected $primaryKey = "id";
     protected $keyType = "int";
@@ -21,4 +22,9 @@ class User extends Authenticatable
         'password',
         'name'
     ];
+
+    public function pemesanan(): HasMany
+    {
+        return $this->hasMany(Pemesanan::class, 'user_id', 'id');
+    }
 }

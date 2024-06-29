@@ -1,34 +1,54 @@
 @extends('layouts.admin')
-@section('title', 'Gor Griya Srimahi Indah')
+@section('title', 'Booking')
 @php
 		use Carbon\Carbon;
 @endphp
 @section('admin-content')
-  <div class="mb-6">
-		<h1 class="text-2xl font-bold">Booking</h1>
+<div class="flex items-center justify-between mb-6">
+	<h1 class="text-2xl font-bold">Booking</h1>
+
+	<div class="flex w-1/3">
+		<form method="GET" action="{{route('booking.index')}}" class="w-full mx-auto">
+			<div class="flex">
+					<div class="relative w-full">
+							<input type="search" name="cari" value="{{$cari}}" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Cari kode pemesanan" />
+							<button type="submit" class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+									<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+											<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+									</svg>
+									<span class="sr-only">Search</span>
+							</button>
+					</div>
+			</div>
+		</form>
+	
+		<button type="button" data-modal-target="tambah_modal" data-modal-toggle="tambah_modal" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 ms-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+			<svg class="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="fillCurrent"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+		</button>
 	</div>
+</div>
 
 	<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
 		<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 				<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 						<tr>
 								<th scope="col" class="px-6 py-3">
-										No
+									No
 								</th>
 								<th scope="col" class="px-6 py-3">
-										Status
+									Tanggal & Waktu
 								</th>
 								<th scope="col" class="px-6 py-3">
-										Kode
+									Kode Booking
 								</th>
 								<th scope="col" class="px-6 py-3">
-										Tanggal
+									Status
 								</th>
 								<th scope="col" class="px-6 py-3">
-										Waktu
+									Waktu
 								</th>
 								<th scope="col" class="px-6 py-3">
-										Action
+									Action
 								</th>
 						</tr>
 				</thead>
@@ -39,16 +59,16 @@
 								{{$no+1}}
 							</th>
 							<td class="px-6 py-4">
-								<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$booking->status}}</span>
+								<div class="flex">{{Carbon::parse($booking->tanggal)->translatedFormat('d F Y')}}<span class="ms-1.5">({{Carbon::parse($booking->waktu_mulai)->format('H:s')}} -> {{Carbon::parse($booking->waktu_selesai)->format('H:s')}})</span></div>
 							</td>
 							<td class="px-6 py-4">
 								{{$booking->kode_pemesanan}}
 							</td>
 							<td class="px-6 py-4">
-								{{Carbon::parse($booking->tanggal)->translatedFormat('d F Y')}}
+								<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$booking->status}}</span>
 							</td>
 							<td class="px-6 py-4">
-								{{Carbon::parse($booking->waktu_mulai)->format('H:s')}} -> {{Carbon::parse($booking->waktu_selesai)->format('H:s')}}
+								Rp{{number_format($booking->total_harga,0,'','.')}}
 							</td>
 							<td class="px-6 py-4 space-x-2">
 								<a href="{{route('booking.view', $booking->id)}}" class="font-medium text-gray-600 dark:text-gray-500 hover:underline">View</a>

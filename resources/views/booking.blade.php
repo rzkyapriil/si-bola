@@ -73,14 +73,14 @@
 					<div class="flex gap-2.5">
 						<div class="w-full">
 							<label for="waktu_mulai" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Waktu mulai</label>
-							<input type="time" step="3600" name="waktu_mulai" id="waktu_mulai" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+							<input type="time" name="waktu_mulai" id="waktu_mulai" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
 							<div class="py-1">
 								<span class="label-text-alt text-red-600">{{ $errors->pemesanan->first('waktu_mulai')}}</span>
 							</div>
 						</div>
 						<div class="w-full">
 							<label for="waktu_selesai" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Waktu selesai</label>
-							<input type="time" step="3600" name="waktu_selesai" id="waktu_selesai" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required disabled/>
+							<input type="time" name="waktu_selesai" id="waktu_selesai" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required disabled/>
 							<div class="py-1">
 								<span class="label-text-alt text-red-600">{{ $errors->pemesanan->first('waktu_selesai')}}</span>
 							</div>
@@ -98,8 +98,7 @@
 </div>
 
 <script>
-	let hargaWeekday = 25000;
-	let hargaWeekend = 30000;
+	let hargaBooking = 50000;
 
 	const harga = document.getElementById('harga');
 
@@ -120,13 +119,13 @@
 
 		let jam = parseInt(hours)+parseInt(selectedValue)
 
-		if(jam < 10){
+		if(jam-1 < 10){
 			waktu_akhir.value = `0${jam-1}:59`;
 			} else {
 			waktu_akhir.value = `${jam-1}:59`;
 		}
 
-		harga.textContent = formatRupiah(hargaWeekday*parseInt(selectedValue));
+		harga.textContent = formatRupiah(hargaBooking*parseInt(selectedValue));
 
 		console.log(waktu_akhir.value);
   }
@@ -151,7 +150,7 @@
     // Set minutes to '00'
     this.value = `${hours}:00`;
 
-		if(jam < 10){
+		if(jam-1 < 10){
 			waktu_akhir.value = `0${jam-1}:59`;
 		} else {
 			waktu_akhir.value = `${jam-1}:59`;

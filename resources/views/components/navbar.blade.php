@@ -1,5 +1,5 @@
 <nav class="absolute w-full bg-white border-gray-200 dark:bg-gray-900">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto py-4">
     <a href="{{ route('home.index') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="{{ asset('images/logo/logo.png') }}" class="h-8" alt="Nama" />
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Gor Griya Srimahi Indah</span>

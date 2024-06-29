@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pembayaran extends Model
+class Inventaris extends Model
 {
-    protected $table = "pembayaran";
+    protected $table = "inventaris";
     protected $primaryKey = "id";
     protected $keyType = "int";
     public $timestamps = true;
     public $incrementing = true;
 
     protected $fillable = [
-        'pemesanan_id',
-        'metode_pembayaran',
-        'bukti_pembayaran',
+        'nama',
+        'harga',
+        'status',
     ];
 }

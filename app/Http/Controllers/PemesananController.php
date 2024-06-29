@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Pembayaran;
 use App\Models\Pemesanan;
+use App\Models\Review;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -14,11 +16,15 @@ use Illuminate\Support\Facades\Validator;
 
 class PemesananController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Pemesanan::select()->paginate(10);
+        $cari = $request->cari;
+        $bookings = Pemesanan
+            ::select()
+            ->where('kode_pemesanan', "LIKE", "%$cari%")
+            ->paginate(10);
 
-        return view('admin.booking', compact('bookings'));
+        return view('admin.booking', compact('bookings', 'cari'));
     }
 
     public function view(Request $request)
@@ -29,7 +35,9 @@ class PemesananController extends Controller
             ->where('pemesanan.id', $request->id)
             ->first();
 
-        return view('admin.lihat_booking', compact('booking'));
+        $review = Review::where('pemesanan_id', $request->id)->first();
+
+        return view('admin.lihat_booking', compact('booking', 'review'));
     }
 
     public function store(Request $request)
@@ -62,7 +70,7 @@ class PemesananController extends Controller
 
         if ($check_tanggal->lessThan($hari_ini)) {
             Session::flash("message", "Tanggal tidak boleh dibawah dari " . $hari_ini->translatedFormat('d F Y'));
-            Session::flash("alert", "Error");
+            Session::flash("alert", "error");
             return redirect()->back();
         }
 
@@ -72,18 +80,26 @@ class PemesananController extends Controller
         // waktu tidak boleh melebihi jam 12
         if ($data['waktu_selesai']->greaterThanOrEqualTo($midnight)) {
             Session::flash("message", "Waktu melebihi jam 24:00!");
-            Session::flash("alert", "Error");
+            Session::flash("alert", "error");
             return redirect()->back();
         }
-        // dd($data['waktu_selesai']);
+
+        $jam_buka = Carbon::parse("08:00");
+        $waktu_mulai = Carbon::parse($data['tanggal'] . ' ' . $data['waktu_mulai']);
+        // waktu tidak boleh kurang dari jam buka
+        if ($waktu_mulai->lessThan($jam_buka)) {
+            Session::flash("message", "Waktu kurang dari jam 08:00!");
+            Session::flash("alert", "error");
+            return redirect()->back();
+        }
 
         $hari_ini = Carbon::now()->format('Y-m-d');
         $start_time = Carbon::parse($data['tanggal'] . ' ' . $data['waktu_mulai'])->format('Y-m-d H:i:s');
         $end_time = Carbon::parse($data['tanggal'] . ' ' . $data['waktu_selesai']->format('H:i:s'))->format('Y-m-d H:i:s');
-        // dd($end_time);
 
         $pemesanan = Pemesanan
             ::where('lapangan', $data['lapangan'])
+            ->where('tanggal', $data['tanggal'])
             ->where(function ($query) use ($start_time, $end_time) {
                 $query->where(function ($query) use ($start_time, $end_time) {
                     $query->where('waktu_mulai', '<=', $start_time)
@@ -103,22 +119,28 @@ class PemesananController extends Controller
         // check pemesanan apakah ada yang sama jamnya
         if ($pemesanan) {
             Session::flash("message", "Jadwal lapangan sudah ada!");
-            Session::flash("alert", "Error");
+            Session::flash("alert", "error");
             return redirect()->back();
         }
 
-        dd($pemesanan);
-
-        $harga = 25000;
-        $waktu_mulai = Carbon::parse('')->format($data['waktu_mulai']);
-        $waktu_selesai = Carbon::parse('')->format($data['waktu_selesai']);
+        $harga = 50000;
         $data['user_id'] = Auth::user()->id;
-        $data['total_harga'] = $harga * ((int)$waktu_selesai - (int)$waktu_mulai);
+        $check_member = User::select()
+            ->with(['pemesanan' => function ($query) {
+                $query->where('pemesanan.status', 'dibayar');
+            }])
+            ->first();
+
+        if ($check_member->pemesanan->count() >= 5) {
+            $data['total_harga'] = ($harga * $data['lama_bermain']) - ((($harga * $data['lama_bermain']) * 20) / 100);
+        } else {
+            $data['total_harga'] = $harga * $data['lama_bermain'];
+        }
         $data['status'] = 'belum dibayar';
         $tanggal = Carbon::now();
         $pemesanan_ke = Pemesanan::whereDate('created_at', $tanggal->format('Y-m-d'))->count();
-        // dd($data);
 
+        // dd($data);
         $pemesanan = new Pemesanan();
         $pemesanan->user_id = $data['user_id'];
         $pemesanan->kode_pemesanan = 'BOO/' . $tanggal->format('Ymd') . '/KE/' . str_pad($pemesanan_ke + 1, 6, '0', STR_PAD_LEFT);;
@@ -132,7 +154,7 @@ class PemesananController extends Controller
         $pemesanan->save();
 
         Session::flash("message", "Booking berhasil dibuat!");
-        Session::flash("alert", "Success");
+        Session::flash("alert", "success");
 
         return redirect()->route('pembayaran.view', ['kode_pemesanan' => urlencode($pemesanan->kode_pemesanan)]);
     }
@@ -162,7 +184,7 @@ class PemesananController extends Controller
         $pemesanan->save();
 
         Session::flash("message", "Status berhasil diupdate!");
-        Session::flash("alert", "Success");
+        Session::flash("alert", "success");
         return redirect()->route('booking.index');
     }
 
@@ -184,12 +206,54 @@ class PemesananController extends Controller
             $pemesanan->delete();
 
             Session::flash("message", "Booking berhasil dihapus!");
-            Session::flash("alert", "Success");
+            Session::flash("alert", "success");
             return redirect()->route('booking.index');
         } catch (QueryException $e) {
             Session::flash("message", "Data sudah berelasi dengan data lain!");
-            Session::flash("alert", "Error");
+            Session::flash("alert", "error");
             return redirect()->back();
         }
+    }
+
+    public function laporan(Request $request)
+    {
+        $filter = $request->filter;
+        $status = isset($request->status) ? $request->status : 'dibayar';
+        $minggu = $request->minggu;
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+
+        if ($filter == 'perminggu') {
+            $date = Carbon::parse($minggu);
+            $startDate = $date->startOfWeek()->format('Y-m-d H:i:s');
+            $endDate = $date->endOfWeek()->format('Y-m-d H:i:s');
+        } elseif ($filter == 'perbulan') {
+            $date = Carbon::parse($bulan);
+            $startDate = $date->startOfMonth()->format('Y-m-d H:i:s');
+            $endDate = $date->endOfMonth()->format('Y-m-d H:i:s');
+        } elseif ($filter == 'pertahun') {
+            $date = Carbon::createFromFormat('Y', $tahun);
+            $startDate = $date->startOfYear()->format('Y-m-d H:i:s');
+            $endDate = $date->endOfYear()->format('Y-m-d H:i:s');
+        } else {
+            $date = Carbon::now();
+            $startDate = $date->startOfYear()->format('Y-m-d H:i:s');
+            $endDate = $date->endOfYear()->format('Y-m-d H:i:s');
+        }
+
+        $purchases = Pemesanan
+            ::select()
+            ->where('status', $status)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->paginate(10);
+
+        return view('admin.laporan_pemesanan', compact(
+            'purchases',
+            'filter',
+            'status',
+            'minggu',
+            'bulan',
+            'tahun',
+        ));
     }
 }
