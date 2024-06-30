@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Booking - Gor Griya Srimahi Indah')
+@section('title', 'Pembayaran - Gor Griya Srimahi Indah')
 
 @section('content')
 <div class="w-full min-h-[100dvh]">

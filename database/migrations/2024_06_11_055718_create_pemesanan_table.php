@@ -21,7 +21,7 @@ return new class extends Migration
             $table->time('waktu_mulai')->nullable(false);
             $table->time('waktu_selesai')->nullable(false);
             $table->integer('total_harga')->nullable(false);
-            $table->enum('status', ['Belum dibayar', 'Dibayar', 'Gagal'])->nullable(false);
+            $table->enum('status', ['belum dibayar', 'dibayar', 'dibatalkan', 'menunggu konfirmasi'])->nullable(false);
             $table->timestamps();
 
             $table->foreign("user_id")->on("users")->references("id");

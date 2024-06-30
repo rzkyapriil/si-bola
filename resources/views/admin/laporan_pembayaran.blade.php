@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Laporan Pemesanan')
+@section('title', 'Laporan Pembayaran')
 
 @php
 		use Carbon\Carbon;

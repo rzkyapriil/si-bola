@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'User')
+@section('title', 'Inventaris')
 
 @section('admin-content')
 <div id="tambah_modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -18,8 +18,13 @@
 							</button>
 					</div>
 					<!-- Modal body -->
-					<form method="POST" action="{{route('inventaris.store')}}" class="p-4 md:p-5 space-y-4">
+					<form method="POST" action="{{route('inventaris.store')}}" enctype="multipart/form-data" class="p-4 md:p-5 flex flex-col gap-4">
 						@csrf
+						<div>
+							<label for="foto" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Foto</label>
+							<input class="block w-full text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" name="foto" accept=".jpg,.png,.jpeg" required>
+							<span class="text-xs text-red-600">{{ $errors->inventaris->first('foto') }}</span>
+						</div>
 						<div>
 							<label for="nama" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
 							<input type="text" id="nama" name="nama" maxlength="200" placeholder="Masukkan nama" class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
@@ -80,6 +85,9 @@
 									No
 								</th>
 								<th scope="col" class="px-6 py-3">
+									Foto
+								</th>
+								<th scope="col" class="px-6 py-3">
 									Nama
 								</th>
 								<th scope="col" class="px-6 py-3">
@@ -99,6 +107,9 @@
 							<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
 								{{$no+1}}
 							</th>
+							<td class="px-6 py-4">
+								<img src="{{asset($inventory->foto)}}" alt="{{$inventory->nama}}" class="h-16 object-cover">
+							</td>
 							<td class="px-6 py-4">
 								{{$inventory->nama}}
 							</td>

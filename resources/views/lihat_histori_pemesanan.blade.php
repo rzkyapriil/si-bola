@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Histori Pemesanan - Gor Griya Srimahi Indah')
+@section('title', $purchaseHistory->kode_pemesanan . ' - Gor Griya Srimahi Indah')
 @php
   use Carbon\Carbon;    
 @endphp

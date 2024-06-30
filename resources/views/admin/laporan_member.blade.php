@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Laporan Pemesanan')
+@section('title', 'Laporan Member')
 
 @section('admin-content')
 <div class="flex mt-14 mb-4">

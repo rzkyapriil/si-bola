@@ -104,6 +104,9 @@
 												No
 										</th>
 										<th scope="col" class="px-6 py-1.5">
+											Foto
+										</th>
+										<th scope="col" class="px-6 py-1.5">
 											Nama
 										</th>
 										<th scope="col" class="px-6 py-1.5">
@@ -120,6 +123,9 @@
 									<th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
 										{{$no+1}}
 									</th>
+									<td class="px-6 py-2">
+										<img src="{{asset($inventory->foto)}}" alt="{{$inventory->nama}}" class="h-16 object-cover">
+									</td>
 									<td class="px-6 py-2">
 										{{$inventory->nama}}
 									</td>

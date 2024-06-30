@@ -14,6 +14,7 @@ class Inventaris extends Model
     public $incrementing = true;
 
     protected $fillable = [
+        'foto',
         'nama',
         'harga',
         'status',

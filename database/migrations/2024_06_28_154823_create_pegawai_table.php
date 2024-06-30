@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('review', function (Blueprint $table) {
+        Schema::create('pegawai', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('pemesanan_id')->nullable(false);
-            $table->string('komentar')->nullable(false);
+            $table->string('nama', 200)->nullable(false);
+            $table->enum('jabatan', ['pengelola lapangan', 'petugas kebersihan', 'kasir'])->nullable(false);
             $table->timestamps();
-
-            $table->foreign("pemesanan_id")->on("pemesanan")->references("id");
         });
     }
 
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('review');
+        Schema::dropIfExists('pegawai');
     }
 };

@@ -19,7 +19,7 @@ Route::get("/login", [\App\Http\Controllers\HomeController::class, "login"])->na
 Route::get("/register", [\App\Http\Controllers\HomeController::class, "register"])->name("register.index");
 
 Route::post("/user/login", [\App\Http\Controllers\UserAuthController::class, "login"])->name("user.login");
-Route::post("/user/register", [\App\Http\Controllers\UserAuthController::class, "store"])->name("user.store");
+Route::post("/user/register", [\App\Http\Controllers\UserAuthController::class, "register"])->name("user.register");
 Route::delete("/user/logout", [\App\Http\Controllers\UserAuthController::class, "logout"])->name("user.logout");
 
 Route::middleware(["auth", "role:user"])->group(function () {

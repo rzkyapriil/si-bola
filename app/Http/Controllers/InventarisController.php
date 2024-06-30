@@ -6,6 +6,7 @@ use App\Models\Inventaris;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class InventarisController extends Controller
@@ -34,6 +35,7 @@ class InventarisController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
+                'foto' => ['required', 'image', 'mimes:jpeg,png,jpg'],
                 'nama' => ['required', 'string'],
                 'harga' => ['required', 'numeric'],
                 'status' => ['required', 'string'],
@@ -49,7 +51,12 @@ class InventarisController extends Controller
 
         $data = $validator->validated();
 
+        $angka = Inventaris::select()->count();
+        $fileName = 'INVENTARIS-' . time() . '.' . $data['foto']->getClientOriginalExtension();
+        $path = $data['foto']->storeAs("images/inventaris", $fileName, "public");
+
         $inventory = new Inventaris();
+        $inventory->foto = "/storage/" . $path;
         $inventory->nama = $data['nama'];
         $inventory->harga = $data['harga'];
         $inventory->status = $data['status'];
@@ -64,6 +71,7 @@ class InventarisController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
+                'foto' => ['image', 'mimes:jpeg,png,jpg'],
                 'nama' => ['required', 'string'],
                 'harga' => ['required', 'numeric'],
                 'status' => ['required', 'string'],
@@ -80,12 +88,32 @@ class InventarisController extends Controller
         $data = $validator->validated();
 
         $inventory = Inventaris::where('id', $request->id)->first();
+
+        if (!isset($data['foto'])) {
+            $inventory->nama = $data['nama'];
+            $inventory->harga = $data['harga'];
+            $inventory->status = $data['status'];
+            $inventory->save();
+
+            Session::flash("message", "Inventaris berhasil diperbaharui!");
+            Session::flash("alert", "success");
+            return redirect()->route("inventaris.index");
+        }
+
+        $filePath = str_replace("/storage/", "public/", $inventory->foto);
+        if (Storage::disk('local')->exists($filePath)) {
+            Storage::disk('local')->delete($filePath);
+        }
+
+        $fileName = 'INVENTARIS-' . time() . '.' . $data['foto']->getClientOriginalExtension();
+        $path = $data['foto']->storeAs("images/inventaris", $fileName, "public");
+        $inventory->foto = "/storage/" . $path;
         $inventory->nama = $data['nama'];
         $inventory->harga = $data['harga'];
         $inventory->status = $data['status'];
         $inventory->save();
 
-        Session::flash("message", "Inventaris berhasil diupdate!");
+        Session::flash("message", "Inventaris berhasil diperbaharui!");
         Session::flash("alert", "success");
         return redirect()->route('inventaris.index');
     }
@@ -93,6 +121,10 @@ class InventarisController extends Controller
     {
         try {
             $inventory = Inventaris::where("id", $request->id)->first();
+            $filePath = str_replace("/storage/", "public/", $inventory->foto);
+            if (Storage::disk('local')->exists($filePath)) {
+                Storage::disk('local')->delete($filePath);
+            }
             $inventory->delete();
 
             Session::flash("message", "Inventaris berhasil dihapus!");

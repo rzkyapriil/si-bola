@@ -18,7 +18,7 @@
 							</button>
 					</div>
 					<!-- Modal body -->
-					<form method="POST" action="{{route('user.store')}}" class="p-4 md:p-5 space-y-4">
+					<form method="POST" action="{{route('user.store')}}" class="p-4 md:p-5 flex flex-col gap-4">
 						@csrf
 						<div>
 							<label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
