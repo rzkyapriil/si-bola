@@ -19,16 +19,16 @@
 		</form>
 	</div>
 
-  <div class="flex items-center justify-between border rounded-lg">
-		<div class="flex w-full flex-col p-3 border-e gap-1">
+  <div class="flex flex-col md:flex-row items-center justify-between border rounded-lg">
+		<div class="flex w-full flex-col p-3 border-b md:border-b-0 border-e-0 md:border-e gap-1">
 			<div>Total Booking</div>
 			<div class="text-3xl font-bold">{{$total_booking}}</div>
 		</div>
-		<div class="flex w-full flex-col p-3 border-e gap-1">
+		<div class="flex w-full flex-col p-3 border-b md:border-b-0 border-e-0 md:border-e gap-1">
 			<div>Total Booking Selesai</div>
 			<div class="text-3xl font-bold">{{$total_booking_selesai}}</div>
 		</div>
-		<div class="flex w-full flex-col p-3 border-e gap-1">
+		<div class="flex w-full flex-col p-3 gap-1">
 			<div>Menunggu Konfirmasi</div>
 			<div class="text-3xl font-bold">{{$menunggu_konfirmasi}}</div>
 		</div>

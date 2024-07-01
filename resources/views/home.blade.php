@@ -8,31 +8,31 @@
 	@include('components.navbar')
 
 	<section class="h-[100dvh] bg-center bg-cover bg-no-repeat bg-[url('https://plus.unsplash.com/premium_photo-1663039984787-b11d7240f592?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-gray-700 bg-blend-multiply">
-		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-start justify-center">
+		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-start justify-center px-4 lg:px-0">
 			<h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
 				Gor Griya Srimahi Indah
 			</h1>
-			<p class="mb-8 text-lg font-normal text-gray-300 lg:text-xl w-[900px]">
+			<p class="mb-8 text-lg font-normal text-gray-300 lg:text-xl w-full lg:w-[900px]">
 				Selamat datang di Gor Griya Srimahi Indah! Temukan dan pesan lapangan badminton favorit Anda dengan beberapa klik saja. Nikmati kemudahan akses, pemesanan real-time, dan berbagai metode pembayaran yang aman.
 			</p>
-			<div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+			<div class="flex flex-row sm:justify-center">
 				<a href="{{ route('home.booking') }}" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
 					Booking lapangan
 					<svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
 						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
 					</svg>
 				</a>
-				<a href="#Jadwal" class="inline-flex justify-center items-center py-3 px-5 ms-4 text-base font-medium text-center text-gray-700 rounded-lg bg-white hover:bg-gray-300 focus:ring-4 focus:ring-blue-300">
+				<a href="#Jadwal" class="flex justify-center items-center py-3 px-5 ms-4 text-base font-medium text-center text-gray-700 rounded-lg bg-white hover:bg-gray-300 focus:ring-4 focus:ring-blue-300">
 					Jadwal
 				</a>
 			</div>
 		</div>
 	</section>
 	<section id="Jadwal" class="w-full min-h-[100dvh] py-8">
-		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center">
+		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center p-4 lg:p-0">
 			<div class="flex items-center justify-between mb-6 w-full">
-				<h1 class="flex items-center gap-1.5 text-2xl font-extrabold w-full">
-					Jadwal Lapangan <span class="text-base font-medium">({{Carbon::parse($tanggal)->translatedFormat('d F Y')}})</span>
+				<h1 class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 text-xl sm:text-2xl font-extrabold w-full">
+					Jadwal Lapangan <span class="text-sm sm:text-base font-medium">({{Carbon::parse($tanggal)->translatedFormat('d F Y')}})</span>
 				</h1>
 				<form method="GET" action="{{route('home.index')}}" class="flex">
 					<input type="date" name="tanggal" value="{{$tanggal}}" class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -90,9 +90,9 @@
 			</div>
 		</div>
 
-		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center mt-8">
+		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center mt-8 p-4 lg:p-0">
 			<div class="flex items-center justify-between mb-6 w-full">
-				<h1 class="text-2xl font-extrabold w-full">
+				<h1 class="text-xl sm:text-2xl font-extrabold w-full">
 					Inventaris
 				</h1>
 			</div>

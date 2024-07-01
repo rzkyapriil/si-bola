@@ -68,17 +68,17 @@
 		</div>
 			<div class="flex flex-col w-full gap-2.5">
 				<div class="flex flex-col gap-2.5 w-full border p-2.5 rounded-lg">
-					<div class="text-xs flex justify-between items-center">
-						<div class="flex items-center gap-2.5">
+					<div class="text-xs flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
+						<div class="flex items-center justify-between w-full sm:w-fit gap-2.5">
 							<div>{{$booking->kode_pemesanan}}</div>
 							<div class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$booking->status}}</div>
 						</div>
-						<div class="flex items-center gap-2.5">
-							<div class="uppercase">{{Carbon::parse($booking->tanggal)->translatedFormat("d F Y")}}</div>
-							<div class="flex gap-1">
-								<div>{{Carbon::parse($booking->waktu_mulai)->format("H:i")}}</div>
+						<div class="flex items-center justify-between w-full sm:w-fit gap-1.5 text-nowrap">
+							<div class="uppercase">{{Carbon::parse($booking->tanggal)->translatedFormat('d F Y')}}</div>
+							<div class="flex text-nowrap w-fit">
+								<div>{{Carbon::parse($booking->waktu_mulai)->translatedFormat('H:s')}}</div>
 								<div>-></div>
-								<div>{{Carbon::parse($booking->waktu_selesai)->format("H:i")}}</div>
+								<div>{{Carbon::parse($booking->waktu_selesai)->translatedFormat('H:s')}}</div>
 							</div>
 						</div>
 					</div>

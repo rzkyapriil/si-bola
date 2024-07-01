@@ -8,7 +8,7 @@
 	@include('components.navbar')
 
 	<section class="min-h-[100dvh] bg-center bg-cover bg-no-repeat bg-[url('https://plus.unsplash.com/premium_photo-1663039984787-b11d7240f592?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-gray-700 bg-blend-multiply">
-		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center">
+		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center p-4 lg:p-0">
 			<div class="w-full max-w-screen-lg mt-32 mb-20 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
 				<div class="flex flex-col gap-4">
 					<div class="flex">
@@ -26,45 +26,47 @@
 							</div>
 						</form>
 					</div>
-				@foreach($purchaseHistories as $purchaseHistory)
-				<div class="flex w-full border rounded-lg">
-					<div class="flex flex-col gap-2.5 w-full p-2.5">
-						<div class="text-xs flex justify-between items-center">
-							<div class="flex items-center gap-2.5">
-								<div>{{$purchaseHistory->kode_pemesanan}}</div>
-								<div class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$purchaseHistory->status}}</div>
+				<div class="overflow-x-auto">
+					@foreach($purchaseHistories as $purchaseHistory)
+					<div class="flex w-full border rounded-lg">
+						<div class="flex flex-col gap-2.5 w-full p-2.5">
+							<div class="text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-0">
+								<div class="flex items-center gap-2.5">
+									<div>{{$purchaseHistory->kode_pemesanan}}</div>
+									<div class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$purchaseHistory->status}}</div>
+								</div>
+								<div class="flex items-center gap-1.5 text-nowrap">
+									<div class="uppercase">{{Carbon::parse($purchaseHistory->tanggal)->translatedFormat('d F Y')}} |</div>
+									<div>{{Carbon::parse($purchaseHistory->waktu_mulai)->translatedFormat('H:s')}}</div>
+									<div>-></div>
+									<div>{{Carbon::parse($purchaseHistory->waktu_selesai)->translatedFormat('H:s')}}</div>
+								</div>
 							</div>
-							<div class="flex items-center gap-1.5">
-								<div class="uppercase">{{Carbon::parse($purchaseHistory->tanggal)->translatedFormat('d F Y')}} |</div>
-								<div>{{Carbon::parse($purchaseHistory->waktu_mulai)->translatedFormat('H:s')}}</div>
-								<div>-></div>
-								<div>{{Carbon::parse($purchaseHistory->waktu_selesai)->translatedFormat('H:s')}}</div>
+							<div class="flex justify-between font-medium">
+								<div>{{$purchaseHistory->nama}}</div>
+								<div>{{$purchaseHistory->lapangan}}</div>
 							</div>
 						</div>
-						<div class="flex justify-between font-medium">
-							<div>{{$purchaseHistory->nama}}</div>
-							<div>{{$purchaseHistory->lapangan}}</div>
+						<div class="ms-4 flex">
+							@if($purchaseHistory->status == 'belum dibayar')
+							<a href="{{route('pembayaran.view', ['kode_pemesanan' => $purchaseHistory->kode_pemesanan])}}" class="flex items-center px-3 py-2 text-xs font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+								Bayar
+							</a>
+							<form method="POST" action="{{route('histori-pemesanan.update', $purchaseHistory->id)}}" class="flex">
+								@csrf @method('put')
+								<input type="hidden" name="status" value="dibatalkan">
+								<button type="submit" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium text-xs px-3 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+									Batalkan
+								</button>
+							</form>
+							@endif
+							<a href="{{route('histori-pemesanan.view', $purchaseHistory->id)}}" class="flex items-center px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-e-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+								Lihat
+							</a>
 						</div>
 					</div>
-					<div class="ms-4 flex">
-						@if($purchaseHistory->status == 'belum dibayar')
-						<a href="{{route('pembayaran.view', ['kode_pemesanan' => $purchaseHistory->kode_pemesanan])}}" class="flex items-center px-3 py-2 text-xs font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-							Bayar
-						</a>
-						<form method="POST" action="{{route('histori-pemesanan.update', $purchaseHistory->id)}}" class="flex">
-							@csrf @method('put')
-							<input type="hidden" name="status" value="dibatalkan">
-							<button type="submit" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium text-xs px-3 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-								Batalkan
-							</button>
-						</form>
-						@endif
-						<a href="{{route('histori-pemesanan.view', $purchaseHistory->id)}}" class="flex items-center px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-e-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-							Lihat
-						</a>
-					</div>
+					@endforeach
 				</div>
-				@endforeach
 				<div class="flex flex-col items-center">
 					<div class="inline-flex items-center justify-between gap-2.5 w-full">
 						<!-- Buttons -->

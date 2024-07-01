@@ -4,22 +4,18 @@
 		use Carbon\Carbon;
 @endphp
 @section('admin-content')
-<div class="flex items-center justify-between mb-6">
-	<h1 class="text-2xl font-bold">Booking</h1>
+<div class="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mb-6">
+	<h1 class="text-2xl font-bold w-fit md:w-full">Booking</h1>
 
-	<div class="flex w-1/3">
-		<form method="GET" action="{{route('booking.index')}}" class="w-full mx-auto">
-			<div class="flex">
-					<div class="relative w-full">
-							<input type="search" name="cari" value="{{$cari}}" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Cari kode pemesanan" />
-							<button type="submit" class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-									<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-											<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-									</svg>
-									<span class="sr-only">Search</span>
-							</button>
-					</div>
-			</div>
+	<div class="flex w-full">
+		<form method="GET" action="{{route('booking.index')}}" class="flex w-full mx-auto">
+			<input type="search" name="cari" value="{{$cari}}" class="flex p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-s-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700" placeholder="Cari kode pemesanan" />
+			<button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-e-lg text-sm px-3 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+					<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+					</svg>
+					<span class="sr-only">Search</span>
+			</button>
 		</form>
 	</div>
 </div>
@@ -55,13 +51,13 @@
 								{{$no+1}}
 							</th>
 							<td class="px-6 py-4">
-								<div class="flex">{{Carbon::parse($booking->tanggal)->translatedFormat('d F Y')}}<span class="ms-1.5">({{Carbon::parse($booking->waktu_mulai)->format('H:s')}} -> {{Carbon::parse($booking->waktu_selesai)->format('H:s')}})</span></div>
+								<div class="flex text-nowrap">{{Carbon::parse($booking->tanggal)->translatedFormat('d F Y')}}<span class="ms-1.5">({{Carbon::parse($booking->waktu_mulai)->format('H:s')}} -> {{Carbon::parse($booking->waktu_selesai)->format('H:s')}})</span></div>
 							</td>
 							<td class="px-6 py-4">
 								{{$booking->kode_pemesanan}}
 							</td>
 							<td class="px-6 py-4">
-								<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$booking->status}}</span>
+								<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 text-nowrap">{{$booking->status}}</span>
 							</td>
 							<td class="px-6 py-4">
 								Rp{{number_format($booking->total_harga,0,'','.')}}
