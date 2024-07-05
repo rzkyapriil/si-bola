@@ -6,7 +6,7 @@
     </a>
     <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
 			@if(Auth::user())
-      <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
+      <button type="button" class="flex text-sm bg-gray-100 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
         <span class="sr-only">Open user menu</span>
         <img class="w-8 h-8 rounded-full" src="{{ asset('images/logo/profile-icon.svg') }}" alt="user photo">
       </button>
@@ -19,6 +19,9 @@
         <ul class="py-2 space-y-2" aria-labelledby="user-menu-button">
           <li>
             <a href="{{route('histori-pemesanan.index')}}" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Histori Pemesanan</a>
+          </li>
+          <li>
+            <a href="{{route('penyewaan.list')}}" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Histori Penyewaan</a>
           </li>
           <li>
             <form class="w-full" method="POST" action="{{ route('user.logout') }}">

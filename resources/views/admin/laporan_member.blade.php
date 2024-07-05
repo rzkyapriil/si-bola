@@ -5,7 +5,7 @@
 <div class="flex flex-col lg:flex-row items-center justify-center mt-14 mb-4 gap-4 lg:gap-0">
 	<h1 class="text-2xl font-bold w-fit lg:w-full">Laporan Member</h1>
 
-	<form method="GET" action="{{ route('laporan.member') }}" class="flex w-full gap-2.5">
+	<form method="GET" action="{{ route('laporan.member') }}" class="flex w-full md:justify-end gap-2.5">
 		<select id="inputFilter" type="text" placeholder="filter" name="filter" class="block p-2.5 w-full lg:w-fit text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500">
 				<option value="" selected disabled>Pilih Filter</option>
 				<option value="perminggu" {{$filter == "perminggu" ? 'selected':''}}>Perminggu</option>
@@ -36,6 +36,9 @@
 				<th scope="col" class="px-6 py-3">
 					Jumlah Booking
 				</th>
+				<th scope="col" class="px-6 py-3">
+					Action
+				</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -50,6 +53,12 @@
 				<td scope="row" class="px-6 py-4">
 					{{$member->pemesanan_count}}
 				</td>
+				<td scope="row" class="px-6 py-4">
+					<form method="POST" action="{{route('laporan.member-download', $member->id)}}">
+						@csrf
+						<button type="submit" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Download Kartu Member</button>
+					</form>
+				</td>
 			</tr>
 			@empty
 			<tr>
@@ -59,7 +68,7 @@
 			@if($members->count() != 0)
 			<tr class="bg-gray-100">
 				<td class="font-bold text-center py-3" colspan="2">Total</td>
-				<td class="font-medium px-6 py-3">{{$members->sum('pemesanan_count')}}</td>
+				<td class="font-medium px-6 py-3" colspan="2">{{$members->sum('pemesanan_count')}}</td>
 			</tr>
 			@endif
 		</tbody>

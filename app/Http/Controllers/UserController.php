@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Typography\FontFactory;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -103,7 +105,9 @@ class UserController extends Controller
         $user = User::where('id', $request->id)->first();
         $user->name = $data['name'];
         $user->username = $data['username'];
-        $user->password = Hash::make($data['password']);
+        if (isset($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
         $user->save();
 
         $user->syncRoles([$data['role']]);
@@ -165,7 +169,7 @@ class UserController extends Controller
             ->where(function ($query) use ($request) {
                 $query->orWhere('users.name', 'LIKE', "%$request->cari%");
             })
-            ->having('pemesanan_count', '>', 0)
+            ->having('pemesanan_count', '>=', 5)
             ->paginate(10);
         return view('admin.laporan_member', compact(
             'members',
@@ -174,5 +178,27 @@ class UserController extends Controller
             'bulan',
             'tahun',
         ));
+    }
+
+    public function download(Request $request)
+    {
+        $user = User::where('id', $request->id)->first();
+
+        // Membuat instance gambar
+        $img = ImageManager::gd()->read('images/kartu_member.png');
+
+        // Menambahkan teks ke dalam gambar
+        $img->text(strtoupper($user->name), 195, 285, function (FontFactory $font) {
+            $font->filename(public_path('/fonts/Roboto/Roboto-Bold.ttf'));
+            $font->size(32);
+            $font->color('fff');
+            $font->lineHeight(1.6);
+            $font->angle(0);
+        });
+
+        // Menyimpan gambar yang telah diubah
+        $img->save(public_path('images/kartu_member.png'));
+
+        return response()->download(public_path('images/kartu_member.png'))->deleteFileAfterSend();
     }
 }

@@ -7,10 +7,10 @@
 <div class="w-full min-h-[100dvh]">
 	@include('components.navbar')
 
-	<section class="h-[100dvh] bg-center bg-cover bg-no-repeat bg-[url('https://plus.unsplash.com/premium_photo-1663039984787-b11d7240f592?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-gray-700 bg-blend-multiply">
+	<section class="h-[100dvh] bg-center bg-cover bg-no-repeat bg-gray-700 bg-blend-multiply" style="background-image: url({{ asset('images/badminton.jpg') }})">
 		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-start justify-center px-4 lg:px-0">
 			<h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
-				Gor Griya Srimahi Indah
+				Gor Griya Srimahi Indah 
 			</h1>
 			<p class="mb-8 text-lg font-normal text-gray-300 lg:text-xl w-full lg:w-[900px]">
 				Selamat datang di Gor Griya Srimahi Indah! Temukan dan pesan lapangan badminton favorit Anda dengan beberapa klik saja. Nikmati kemudahan akses, pemesanan real-time, dan berbagai metode pembayaran yang aman.
@@ -115,6 +115,9 @@
 										<th scope="col" class="px-6 py-1.5">
 											Status
 										</th>
+										<th scope="col" class="px-6 py-1.5">
+											Action
+										</th>
 								</tr>
 						</thead>
 						<tbody>
@@ -134,6 +137,9 @@
 									</td>
 									<td class="px-6 py-2">
 										{{$inventory->status}}
+									</td>
+									<td class="px-6 py-2">
+										<a href="{{route('penyewaan.form', ['inventaris' => $inventory->id])}}" class="font-medium text-gray-600 dark:text-gray-500 hover:underline">Sewa</a>
 									</td>
 								</tr>
 								@empty

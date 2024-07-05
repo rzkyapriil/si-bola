@@ -5,7 +5,7 @@
 <div class="w-full min-h-[100dvh]">
 	@include('components.navbar')
 
-	<section class="h-[100dvh] bg-center bg-cover bg-no-repeat bg-[url('https://plus.unsplash.com/premium_photo-1663039984787-b11d7240f592?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-gray-700 bg-blend-multiply">
+	<section class="h-[100dvh] bg-center bg-cover bg-no-repeat bg-gray-700 bg-blend-multiply" style="background-image: url({{ asset('images/badminton.jpg') }})">
 		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center">
 			<div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
 				<form class="flex flex-col gap-6" method="POST" action="{{ route('user.register') }}">

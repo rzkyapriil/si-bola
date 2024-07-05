@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Histori Pemesanan - Gor Griya Srimahi Indah')
+@section('title', 'Histori Penyewaan - Gor Griya Srimahi Indah')
 @php
   use Carbon\Carbon;    
 @endphp
@@ -15,7 +15,7 @@
 						<form method="GET" action="{{route('histori-pemesanan.index')}}" class="w-full mx-auto">
 							<div class="flex">
 									<div class="relative w-full">
-											<input type="search" name="cari" value="{{$cari}}" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Cari kode pemesanan" />
+											<input type="search" name="cari" value="{{$cari}}" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Cari nama" />
 											<button type="submit" class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
 													<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
 															<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -26,33 +26,31 @@
 							</div>
 						</form>
 					</div>
-				<div class="overflow-x-auto">
-					@foreach($purchaseHistories as $purchaseHistory)
+				<div class="flex flex-col gap-2.5 overflow-x-auto">
+					@foreach($rentals as $rental)
 					<div class="flex w-full border rounded-lg">
 						<div class="flex flex-col gap-2.5 w-full p-2.5">
 							<div class="text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-0">
 								<div class="flex items-center gap-2.5">
-									<div>{{$purchaseHistory->kode_pemesanan}}</div>
-									<div class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$purchaseHistory->status}}</div>
+									<div class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{$rental->status}}</div>
 								</div>
 								<div class="flex items-center gap-1.5 text-nowrap">
-									<div class="uppercase">{{Carbon::parse($purchaseHistory->tanggal)->translatedFormat('d F Y')}} |</div>
-									<div>{{Carbon::parse($purchaseHistory->waktu_mulai)->translatedFormat('H:i')}}</div>
+									<div class="uppercase">{{Carbon::parse($rental->tanggal_mulai)->translatedFormat('d F Y')}} |</div>
+									<div>{{Carbon::parse($rental->tanggal_mulai)->translatedFormat('H:i')}}</div>
 									<div>-></div>
-									<div>{{Carbon::parse($purchaseHistory->waktu_selesai)->translatedFormat('H:i')}}</div>
+									<div>{{Carbon::parse($rental->tanggal_selesai)->translatedFormat('H:i')}}</div>
 								</div>
 							</div>
 							<div class="flex justify-between font-medium">
-								<div>{{$purchaseHistory->nama}}</div>
-								<div>{{$purchaseHistory->lapangan}}</div>
+								<div>{{$rental->nama}}</div>
 							</div>
 						</div>
 						<div class="ms-4 flex">
-							@if($purchaseHistory->status == 'belum dibayar')
-							<a href="{{route('pembayaran.view', ['kode_pemesanan' => $purchaseHistory->kode_pemesanan])}}" class="flex items-center px-3 py-2 text-xs font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+							@if($rental->status == 'belum dibayar')
+							<a href="{{route('penyewaan.view', ['penyewaan' => $rental->penyewaan_id])}}" class="flex items-center px-3 py-2 text-xs font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
 								Bayar
 							</a>
-							<form method="POST" action="{{route('histori-pemesanan.update', $purchaseHistory->id)}}" class="flex">
+							<form method="POST" action="{{route('penyewaan.update', $rental->penyewaan_id)}}" class="flex">
 								@csrf @method('put')
 								<input type="hidden" name="status" value="dibatalkan">
 								<button type="submit" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium text-xs px-3 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
@@ -60,9 +58,11 @@
 								</button>
 							</form>
 							@endif
-							<a href="{{route('histori-pemesanan.view', $purchaseHistory->id)}}" class="flex items-center px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-e-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+							@if(isset($rental->bukti_pembayaran))
+							<a href="{{$rental->bukti_pembayaran}}" target="_blank" class="flex items-center px-3 py-2 text-xs font-medium text-white bg-gray-700 rounded-e-lg hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
 								Lihat
 							</a>
+							@endif
 						</div>
 					</div>
 					@endforeach
@@ -70,7 +70,7 @@
 				<div class="flex flex-col items-center">
 					<div class="inline-flex items-center justify-between gap-2.5 w-full">
 						<!-- Buttons -->
-						<a href="{{$purchaseHistories->previousPageUrl()}}" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+						<a href="{{$rentals->previousPageUrl()}}" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
 								<svg class="w-3.5 h-3.5 me-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
 									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
 								</svg>
@@ -79,16 +79,16 @@
 						<span class="text-sm text-gray-700 dark:text-gray-400">
 							Showing 
 							<span class="font-semibold text-gray-900 dark:text-white">
-								{{$purchaseHistories->currentPage()}}
+								{{$rentals->currentPage()}}
 							</span> to
 							<span class="font-semibold text-gray-900 dark:text-white">
-								{{$purchaseHistories->lastPage()}}
+								{{$rentals->lastPage()}}
 							</span> of 
 							<span class="font-semibold text-gray-900 dark:text-white">
-								{{$purchaseHistories->total()}}
+								{{$rentals->total()}}
 							</span> Entries
 						</span>
-						<a href="{{$purchaseHistories->nextPageUrl()}}" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+						<a href="{{$rentals->nextPageUrl()}}" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
 								Next
 								<svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
 								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>

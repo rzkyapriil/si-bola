@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get("/", [\App\Http\Controllers\HomeController::class, "index"])->name("home.index");
 Route::get("/booking", [\App\Http\Controllers\HomeController::class, "form"])->name("booking.index");
+Route::get("/penyewaan", [\App\Http\Controllers\PenyewaanController::class, "form"])->name("penyewaan.form");
 Route::get("/login", [\App\Http\Controllers\HomeController::class, "login"])->name("login.index");
 Route::get("/register", [\App\Http\Controllers\HomeController::class, "register"])->name("register.index");
 
@@ -26,6 +27,10 @@ Route::middleware(["auth", "role:user"])->group(function () {
     Route::get("/booking", [\App\Http\Controllers\HomeController::class, "form"])->name("home.booking");
     Route::post("/booking", [\App\Http\Controllers\PemesananController::class, "store"])->name("booking.store");
 
+    Route::post("/penyewaan", [\App\Http\Controllers\PenyewaanController::class, "store"])->name("penyewaan.store");
+    Route::get("/penyewaan/pembayaran", [\App\Http\Controllers\PenyewaanController::class, "view"])->name("penyewaan.view");
+    Route::get("/histori-penyewaan", [\App\Http\Controllers\PenyewaanController::class, "list"])->name("penyewaan.list");
+
     Route::get("/histori-pemesanan", [\App\Http\Controllers\HistoriPemesananController::class, "index"])->name("histori-pemesanan.index");
     Route::get("/histori-pemesanan/{id}", [\App\Http\Controllers\HistoriPemesananController::class, "view"])->name("histori-pemesanan.view");
     Route::put("/histori-pemesanan/{id}", [\App\Http\Controllers\HistoriPemesananController::class, "update"])->name("histori-pemesanan.update");
@@ -36,6 +41,10 @@ Route::middleware(["auth", "role:user"])->group(function () {
     Route::post("/pembayaran", [\App\Http\Controllers\PembayaranController::class, "store"])->name("pembayaran.store");
 });
 
+Route::prefix('penyewaan')->name("penyewaan")->middleware(['role:pegawai|user'])->group(function () {
+    Route::put("/penyewaan/{id}", [\App\Http\Controllers\PenyewaanController::class, "update"])->name(".update");
+});
+
 Route::prefix('admin')->middleware(["auth"])->group(function () {
     Route::get("/dashboard", [\App\Http\Controllers\DashboardController::class, "index"])->middleware(['role:admin|pegawai'])->name("dashboard.index");
 
@@ -44,6 +53,11 @@ Route::prefix('admin')->middleware(["auth"])->group(function () {
         Route::get("/{id}/view", [\App\Http\Controllers\PemesananController::class, "view"])->name(".view");
         Route::put("/{id}", [\App\Http\Controllers\PemesananController::class, "update"])->name(".update");
         Route::delete("/{id}", [\App\Http\Controllers\PemesananController::class, "destroy"])->name(".destroy");
+    });
+
+    Route::prefix('penyewaan')->name("penyewaan")->middleware(['role:pegawai'])->group(function () {
+        Route::get("/", [\App\Http\Controllers\PenyewaanController::class, "index"])->name(".index");
+        // Route::put("/{id}", [\App\Http\Controllers\PemesananController::class, "update"])->name(".update");
     });
 
     Route::prefix('user')->name("user")->middleware(['role:admin'])->group(function () {
@@ -77,6 +91,7 @@ Route::prefix('admin')->middleware(["auth"])->group(function () {
     });
 
     Route::prefix('laporan')->name("laporan")->middleware(['role:admin'])->group(function () {
+        Route::post("/member/{id}/download", [\App\Http\Controllers\UserController::class, "download"])->name(".member-download");
         Route::get("/member", [\App\Http\Controllers\UserController::class, "laporan"])->name(".member");
         Route::get("/keuangan", [\App\Http\Controllers\GajiController::class, "laporan"])->name(".keuangan");
     });

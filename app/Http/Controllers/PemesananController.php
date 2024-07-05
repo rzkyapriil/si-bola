@@ -126,6 +126,7 @@ class PemesananController extends Controller
         $harga = 50000;
         $data['user_id'] = Auth::user()->id;
         $check_member = User::select()
+            ->where('id', $data['user_id'])
             ->with(['pemesanan' => function ($query) {
                 $query->where('pemesanan.status', 'dibayar');
             }])

@@ -9,7 +9,7 @@
 <div class="flex flex-col lg:flex-row items-center justify-center mt-14 mb-4 gap-4 lg:gap-0">
 	<h1 class="text-2xl font-bold w-fit lg:w-full">Laporan Pemesanan</h1>
 
-	<form method="GET" action="{{ route('laporan.pemesanan') }}" class="flex flex-col md:flex-row w-full gap-2.5">
+	<form method="GET" action="{{ route('laporan.pemesanan') }}" class="flex flex-col md:flex-row w-full md:justify-end gap-2.5">
 		<select id="inputStatus" type="text" placeholder="status" name="status" class="block p-2.5 w-full lg:w-fit text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-e-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500">
 			<option value="" selected disabled>Pilih Filter</option>
 			<option value="dibayar" {{$status == "dibayar" ? 'selected':''}}>Selesai</option>
@@ -52,9 +52,6 @@
 				<th scope="col" class="px-6 py-3">
 					Total Harga
 				</th>
-				<th scope="col" class="px-6 py-3">
-					Action
-				</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -74,9 +71,6 @@
 				</td>
 				<td class="px-6 py-4">
 					Rp{{number_format($purchase->total_harga,0,'','.')}}
-				</td>
-				<td class="px-6 py-4 space-x-2">
-					<a href="{{route('booking.view', $purchase->id)}}" target="_blank" class="font-medium text-gray-600 dark:text-gray-500 hover:underline">View</a>
 				</td>
 			</tr>
 			@empty
