@@ -9,6 +9,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Typography\FontFactory;
@@ -184,8 +185,15 @@ class UserController extends Controller
     {
         $user = User::where('id', $request->id)->first();
 
+        $imagePath = 'images/kartu_member.png';
+
+        $tempPath = 'images/kartu_member_' . $user->name . '.png';
+
+        Storage::copy(public_path($imagePath), public_path($tempPath));
+
         // Membuat instance gambar
-        $img = ImageManager::gd()->read('images/kartu_member.png');
+        $img = ImageManager::gd()->read($imagePath);
+
 
         // Menambahkan teks ke dalam gambar
         $img->text(strtoupper($user->name), 195, 285, function (FontFactory $font) {
@@ -197,8 +205,10 @@ class UserController extends Controller
         });
 
         // Menyimpan gambar yang telah diubah
-        $img->save(public_path('images/kartu_member.png'));
+        $img->save(public_path($tempPath));
 
-        return response()->download(public_path('images/kartu_member.png'))->deleteFileAfterSend();
+
+        // Mengirim file untuk diunduh dan menghapusnya setelah unduhan selesai
+        return response()->download($tempPath)->deleteFileAfterSend(true);
     }
 }

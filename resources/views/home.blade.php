@@ -28,131 +28,86 @@
 			</div>
 		</div>
 	</section>
-	<section id="Jadwal" class="w-full min-h-[100dvh] py-8">
+	<section id="Jadwal" class="w-full min-h-[100dvh] pt-12">
 		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center p-4 lg:p-0">
-			<div class="flex items-center justify-between mb-6 w-full">
-				<h1 class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 text-xl sm:text-2xl font-extrabold w-full">
-					Jadwal Lapangan <span class="text-sm sm:text-base font-medium">({{Carbon::parse($tanggal)->translatedFormat('d F Y')}})</span>
+			<div class="relative flex items-center justify-center mb-6 w-full">
+				<div class="absolute left-0 font-mono">
+					<div class="flex flex-col">
+						<div class="flex justify-between text-xl font-semibold">{{Carbon::parse($tanggal)->translatedFormat('d')}} <span>/</span> {{Carbon::parse($tanggal)->translatedFormat('m')}}</div>
+						<div class="text-sm">{{Carbon::parse($tanggal)->translatedFormat('Y-D')}}</div>
+					</div>
+				</div>
+				<h1 class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 text-xl sm:text-3xl font-bold font-mono">
+					Jadwal Penggunaan Lapangan
 				</h1>
-				<form method="GET" action="{{route('home.index')}}" class="flex">
-					<input type="date" name="tanggal" value="{{$tanggal}}" class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-					<button type="submit" class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-						<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-						</svg>
-						<span class="sr-only">Search</span>
-				</button>
+				<form method="GET" action="{{route('home.index')}}" class="absolute right-0">
+					<div class="flex">
+						<input type="date" name="tanggal" value="{{$tanggal}}" class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+						<button type="submit" class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+							<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+							</svg>
+							<span class="sr-only">Search</span>
+						</button>
+					</div>
 				</form>
 			</div>
-			<div class="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
-				<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-						<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-								<tr>
-										<th scope="col" class="px-6 py-1.5">
-											No
-										</th>
-										<th scope="col" class="px-6 py-1.5">
-											Lapangan
-										</th>
-										<th scope="col" class="px-6 py-1.5">
-											Waktu
-										</th>
-										<th scope="col" class="px-6 py-1.5">
-											Nama
-										</th>
-								</tr>
-						</thead>
-						<tbody>
-								@forelse($timetables as $no => $timetable)
-								<tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-									<th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-										{{$no+1}}
-									</th>
-									<td class="px-6 py-2">
-										{{$timetable->lapangan}}
-									</td>
-									<td class="px-6 py-2">
-										{{Carbon::parse($timetable->waktu_mulai)->format('H:s')}} -> {{Carbon::parse($timetable->waktu_selesai)->format('H:s')}}
-									</td>
-									<td class="px-6 py-2">
-										{{$timetable->nama}}
-									</td>
-								</tr>
-								@empty
-								<tr>
-									<td colspan="4" class="px-6 py-2 text-center">
-										Data Kosong
-									</td>
-								</tr>
-								@endforelse
-						</tbody>
-				</table>
+			<div class="flex flex-col w-full">
+				@forelse($timetables as $no => $timetable)
+				<div class="flex items-center justify-between w-full px-3 py-4 border-b border-black hover:bg-gray-50">
+					<div class="font-mono font-thin text-lg">
+						{{Carbon::parse($timetable->waktu_mulai)->format('H:i')}} 
+					</div>
+					<div class="font-mono text-blue-700 font-semibold text-2xl">
+						{{$timetable->lapangan}}
+					</div>
+					<div class="font-mono font-thin text-lg">
+						{{Carbon::parse($timetable->waktu_selesai)->format('H:i')}} 
+					</div>
+				</div>
+				@empty
+				<div class="flex items-center justify-between w-full py-3 border-y border-black">
+					<div class="font-mono text-blue-700 font-semibold text-2xl text-center w-full">
+						Data tidak ada!
+					</div>
+				</div>
+				@endforelse
 			</div>
 		</div>
 
-		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center mt-8 p-4 lg:p-0">
-			<div class="flex items-center justify-between mb-6 w-full">
-				<h1 class="text-xl sm:text-2xl font-extrabold w-full">
-					Inventaris
+		<div class="mx-auto max-w-screen-xl h-full flex flex-col items-center justify-center p-4 mt-12 lg:p-0 group">
+			<div class="relative flex items-center justify-center mb-6 w-full">
+				<h1 class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 text-xl sm:text-3xl font-bold font-mono">
+					Sewa Alat
 				</h1>
 			</div>
-			<div class="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
-				<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-						<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-								<tr>
-										<th scope="col" class="px-6 py-1.5">
-												No
-										</th>
-										<th scope="col" class="px-6 py-1.5">
-											Foto
-										</th>
-										<th scope="col" class="px-6 py-1.5">
-											Nama
-										</th>
-										<th scope="col" class="px-6 py-1.5">
-											Harga
-										</th>
-										<th scope="col" class="px-6 py-1.5">
-											Status
-										</th>
-										<th scope="col" class="px-6 py-1.5">
-											Action
-										</th>
-								</tr>
-						</thead>
-						<tbody>
-								@forelse($inventories as $no => $inventory)
-								<tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-									<th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-										{{$no+1}}
-									</th>
-									<td class="px-6 py-2">
-										<img src="{{asset($inventory->foto)}}" alt="{{$inventory->nama}}" class="h-16 object-cover">
-									</td>
-									<td class="px-6 py-2">
-										{{$inventory->nama}}
-									</td>
-									<td class="px-6 py-2">
-										{{$inventory->harga}}
-									</td>
-									<td class="px-6 py-2">
-										{{$inventory->status}}
-									</td>
-									<td class="px-6 py-2">
-										<a href="{{route('penyewaan.form', ['inventaris' => $inventory->id])}}" class="font-medium text-gray-600 dark:text-gray-500 hover:underline">Sewa</a>
-									</td>
-								</tr>
-								@empty
-								<tr>
-									<td colspan="4" class="px-6 py-2 text-center">
-										Data Kosong
-									</td>
-								</tr>
-								@endforelse
-						</tbody>
-				</table>
+			<div class="flex flex-col gap-4 w-full">
+				@forelse($inventories as $no => $inventory)
+				<div class="relative flex items-center justify-center w-full py-3 border-b border-black hover:bg-gray-50">
+					<div class="absolute left-4 font-mono font-thin text-lg">
+						{{$inventory->nama}}
+					</div>
+					<div class="font-mono text-blue-700 font-semibold text-2xl w-fit">
+						<img src="{{asset($inventory->foto)}}" alt="{{$inventory->nama}}" class="h-20 hover:h-40 transition-all ease-in-out object-cover">
+					</div>
+					
+					<div class="absolute right-4 flex gap-4">
+						<div class="font-mono font-thin text-lg">
+							25k/jam
+						</div>
+						<a href="{{route('penyewaan.form', ['inventaris' => $inventory->id])}}" title="sewa" class="text-blue-700 font-mono font-semibold text-lg hidden group-hover:flex hover:underline">
+							Sewa
+						</a>
+					</div>
+				</div>
+				@empty
+				<div class="flex items-center justify-between w-full py-3 border-y border-black">
+					<div class="font-mono text-blue-700 font-semibold text-2xl text-center w-full">
+						Data tidak ada!
+					</div>
+				</div>
+				@endforelse
 			</div>
-		</div>
 	</section>
 </div>
 

@@ -154,8 +154,13 @@ class PemesananController extends Controller
         $pemesanan->status = $data['status'];
         $pemesanan->save();
 
-        Session::flash("message", "Booking berhasil dibuat!");
-        Session::flash("alert", "success");
+        if ($check_member->pemesanan->count() >= 5) {
+            Session::flash("message", "Selamat! Anda mendapatkan harga spesial sebagai member kami.");
+            Session::flash("alert", "success");
+        } else {
+            Session::flash("message", "Booking berhasil dibuat!");
+            Session::flash("alert", "success");
+        }
 
         return redirect()->route('pembayaran.view', ['kode_pemesanan' => urlencode($pemesanan->kode_pemesanan)]);
     }

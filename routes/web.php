@@ -18,6 +18,7 @@ Route::get("/booking", [\App\Http\Controllers\HomeController::class, "form"])->n
 Route::get("/penyewaan", [\App\Http\Controllers\PenyewaanController::class, "form"])->name("penyewaan.form");
 Route::get("/login", [\App\Http\Controllers\HomeController::class, "login"])->name("login.index");
 Route::get("/register", [\App\Http\Controllers\HomeController::class, "register"])->name("register.index");
+Route::get("/syarat-dan-ketentuan-member", [\App\Http\Controllers\HomeController::class, "syaratDanKetentuan"])->name("snk.index");
 
 Route::post("/user/login", [\App\Http\Controllers\UserAuthController::class, "login"])->name("user.login");
 Route::post("/user/register", [\App\Http\Controllers\UserAuthController::class, "register"])->name("user.register");

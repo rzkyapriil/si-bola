@@ -18,8 +18,8 @@ return new class extends Migration
             $table->dateTime('tanggal_mulai')->nullable(false);
             $table->dateTime('tanggal_selesai')->nullable(false);
             $table->integer('total_harga')->nullable(false);
-            $table->enum('metode_pembayaran', ['transfer', 'cash'])->nullable(false);
-            $table->string('bukti_pembayaran', 512)->nullable(false);
+            $table->enum('metode_pembayaran', ['transfer', 'cash'])->nullable();
+            $table->string('bukti_pembayaran', 512)->nullable();
             $table->enum('status', ['belum dibayar', 'dibayar', 'dibatalkan', 'menunggu konfirmasi'])->nullable(false);
             $table->timestamps();
 

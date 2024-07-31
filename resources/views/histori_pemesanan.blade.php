@@ -27,6 +27,7 @@
 						</form>
 					</div>
 				<div class="overflow-x-auto">
+					<div class="flex flex-col w-full gap-2.5">
 					@foreach($purchaseHistories as $purchaseHistory)
 					<div class="flex w-full border rounded-lg">
 						<div class="flex flex-col gap-2.5 w-full p-2.5">
@@ -66,6 +67,7 @@
 						</div>
 					</div>
 					@endforeach
+					</div>
 				</div>
 				<div class="flex flex-col items-center">
 					<div class="inline-flex items-center justify-between gap-2.5 w-full">

@@ -16,6 +16,7 @@ class HomeController extends Controller
         $timetables = Pemesanan
             ::where('status', 'dibayar')
             ->whereDate('tanggal', $request->tanggal == null ? $hari_ini : $request->tanggal)
+            ->orderBy('lapangan', 'asc')
             ->orderBy('waktu_mulai', 'asc')
             ->select()
             ->get();
@@ -35,6 +36,11 @@ class HomeController extends Controller
     public function register()
     {
         return view('register');
+    }
+
+    public function syaratDanKetentuan()
+    {
+        return view('snk_member');
     }
 
     public function form()
